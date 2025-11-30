@@ -15,7 +15,7 @@ This project implements an optimization model for biodiversity conservation on t
 4. *Oryctolagus cuniculus*
 
 ## Project Structure
-
+```
 biodiversity-conservation-menorca/
 ├── 1_documentation/               # Model documentation and justifications
 │   ├── model-design/              # Model design versions (V1, V2, V3)
@@ -40,7 +40,7 @@ biodiversity-conservation-menorca/
 └── 6_final_submission/            # Final submission package
     ├── report.pdf                 # Final project report PDF
     └── experiments/               # All experiment runs used in the report
-
+```
 ## Model Evolution (Iterative Process)
 
 The solution was developed through three distinct modeling phases to overcome scalability challenges:
