@@ -16,30 +16,31 @@ This project implements an optimization model for biodiversity conservation on t
 
 ## Project Structure
 
-```text
 biodiversity-conservation-menorca/
-├── 1_documentation/          # Model documentation and justifications
-│   ├── model-design/         # Model design versions (V1, V2, V3)
-│   └── minimum-area-targets/ # Minimum area target justifications
-├── 2_data/                   # Project data
-│   ├── raw/                  # Original data (dataset.geojson)
-│   └── processed/            # Processed data (final_dataset.csv/geojson)
-├── 3_notebooks/              # Exploratory analysis and visualizations
+├── 1_documentation/               # Model documentation and justifications
+│   ├── model-design/              # Model design versions (V1, V2, V3)
+│   └── minimum-area-targets/      # Minimum area target justifications
+├── 2_data/                        # Project data
+│   ├── raw/                       # Original data (dataset.geojson)
+│   └── processed/                 # Processed data (final_dataset.csv/geojson)
+├── 3_notebooks/                   # Exploratory analysis and visualizations
 │   ├── 00_project_statement.ipynb
 │   ├── 01_eda_analysis.ipynb
 │   ├── 02_visualization_maps.ipynb
-│   └── iterations/           # Model iterations
-├── 4_source_code/            # Main source code
-│   ├── data_preparation.py   # Data preparation and processing
-│   ├── optimization_model.py # CP-SAT optimization model
-│   └── main.py               # Main execution script
-├── 5_results/                # Generated results
-│   ├── EDA/                  # Exploratory data analysis
-│   ├── solutions/            # Optimal solutions and maps
-│   ├── iterations/           # Iteration results
-│   └── tables/               # Result tables
-└── 6_final_submission/       # Final submission
-```
+│   └── iterations/                # Model iterations (V1, V2)
+├── 4_source_code/                 # Main source code
+│   ├── data_preparation.py        # Data preparation and processing
+│   ├── optimization_model.py      # CP-SAT optimization model (V3)
+│   └── main.py                    # Main execution script
+├── 5_results/                     # Generated results
+│   ├── EDA/                       # Exploratory data analysis outputs
+│   ├── solutions/                 # Final solutions and maps
+│   ├── iterations/                # Intermediate results for V1/V2/V3
+│   └── tables/                    # Summary tables
+└── 6_final_submission/            # Final submission package
+    ├── report.pdf                 # Final project report PDF
+    └── experiments/               # All experiment runs used in the report
+
 ## Model Evolution (Iterative Process)
 
 The solution was developed through three distinct modeling phases to overcome scalability challenges:
