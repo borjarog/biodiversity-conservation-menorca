@@ -1,6 +1,6 @@
 # Biodiversity Conservation Project in Menorca
 
-## 📋 Project Description
+## Project Description
 
 This project implements an optimization model for biodiversity conservation on the island of Menorca. The objective is to determine the optimal allocation of resources (limited budget) to expand habitats for four key species through:
 
@@ -9,26 +9,26 @@ This project implements an optimization model for biodiversity conservation on t
 
 ### Target Species
 
-1. **Atelerix algirus** (Algerian hedgehog) - Weight: 1.0
-2. **Martes martes** (Pine marten) - Weight: 1.0
-3. **Eliomys quercinus** (Garden dormouse) - Weight: 2.0
-4. **Oryctolagus cuniculus** (European rabbit) - Weight: 1.5
+1. *Atelerix algirus*
+2. *Martes martes*
+3. *Eliomys quercinus*
+4. *Oryctolagus cuniculus*
 
-## 🏗️ Project Structure
+## Project Structure
 
 ```text
 biodiversity-conservation-menorca/
 ├── 1_documentation/          # Model documentation and justifications
-│   ├── model-design/         # Model design versions
+│   ├── model-design/         # Model design versions (V1, V2, V3)
 │   └── minimum-area-targets/ # Minimum area target justifications
 ├── 2_data/                   # Project data
 │   ├── raw/                  # Original data (dataset.geojson)
 │   └── processed/            # Processed data (final_dataset.csv/geojson)
 ├── 3_notebooks/              # Exploratory analysis and visualizations
-│   ├── 00_project_statement.ipynb.ipynb
+│   ├── 00_project_statement.ipynb
 │   ├── 01_eda_analysis.ipynb
 │   ├── 02_visualization_maps.ipynb
-│   └── iterations/           # Model iterations (v1, v2)
+│   └── iterations/           # Model iterations
 ├── 4_source_code/            # Main source code
 │   ├── data_preparation.py   # Data preparation and processing
 │   ├── optimization_model.py # CP-SAT optimization model
@@ -40,90 +40,127 @@ biodiversity-conservation-menorca/
 │   └── tables/               # Result tables
 └── 6_final_submission/       # Final submission
 ```
+## Model Evolution (Iterative Process)
 
-## 🚀 Quick Start
+The solution was developed through three distinct modeling phases to overcome scalability challenges:
+
+### Phase 1: Initial Network Flow (V.1)
+- **Concept:** A monolithic Mixed-Integer Linear Programming (MIP) model using flow variables ($f_{u,v,s}$) to enforce connectivity.
+- **Outcome:** Computationally intractable on the full island grid due to the explosion of integer variables.
+
+### Phase 2: Path Selection Strategy (V.2)
+- **Concept:** Replaced flow variables with a pre-calculated path strategy. Connectivity was enforced via logical implications ($x \implies z$).
+- **Outcome:** Solvable, but lacked geographical realism (corridors followed abstract grid adjacency rather than real terrain).
+
+### Phase 3: Hybrid Geodetic Model (Final V.3)
+- **Concept:** Integrates **real-world geography** (Haversine distances) and **graph pruning** in a preprocessing step using Dijkstra. The resulting optimized graph is fed into a compact **CP-SAT** model.
+- **Outcome:** High performance, geographically accurate, and biologically robust solutions solved in seconds.
+
+## Quick Start
 
 ### Prerequisites
 
+Install all dependencies using the provided requirements file:
+
 ```bash
-pip install pandas geopandas numpy networkx ortools matplotlib seaborn
+pip install -r requirements.txt
 ```
 
-Or install from `requirements.txt` (if available).
+##  Model Execution & Workflow
 
-### Model Execution
-
-1. **Prepare the data** (if not already processed):
+The data has already been pre-processed and is ready to use. To run the optimization model:
 
 ```bash
 cd 4_source_code
-python data_preparation.py
-```
-
-2. **Run the optimization model**:
-
-```bash
 python main.py
 ```
 
-   **Note**: The script will run the solver with a budget of 1000 kEUR and a time limit of 600 seconds (10 minutes).
+Default execution settings:
 
-3. **Results**:
+- **Budget:** 1000 kEUR  
+- **Time limit:** 600 seconds (10 minutes)
 
-   The solution is saved to `5_results/solutions/solution_optimal.csv` and a cost audit is generated in the console.
+### Results
 
-## 📊 Workflow
+- The solution is saved at:  
+  `5_results/solutions/solution_optimal.csv`
+- A detailed **cost audit** is printed to the console.
 
-1. **Data Preparation** (`data_preparation.py`):
-   - Loads geographic data from `2_data/raw/dataset.geojson`
-   - Calculates suitability scores for each species based on land cover type
-   - Identifies neighbors for each cell
-   - Exports final dataset in CSV and GeoJSON formats
+---
 
-2. **Optimization Model** (`optimization_model.py`):
-   - Builds connectivity graph between cells
-   - Calculates shortest paths (Dijkstra) from existing populations
-   - Solves optimization problem with CP-SAT (Google OR-Tools)
-   - Considers budget constraints, biological equity, and species conflicts
+## Workflow
 
-3. **Analysis and Visualization** (`3_notebooks/`):
-   - Exploratory data analysis (EDA)
-   - Map and result visualizations
-   - Model iteration comparisons
+### **1. Data Preparation (`data_preparation.py`)**
 
-## 🔧 Model Configuration
+- Loads geographic data from:  
+  `2_data/raw/dataset.geojson`
+- Computes **suitability scores** based on land-cover type.
+- Exports the final dataset in **CSV** and **GeoJSON** formats.
 
-### Main Parameters (in `optimization_model.py`)
+### **2. Optimization Model (`optimization_model.py`)**
 
-- **Budget**: Defined in `main.py` (default: 1000 kEUR)
-- **Species weights**: `W_VALS = [1.0, 1.0, 2.0, 1.5]`
-- **Biological equity**: Minimum and maximum ranges of active area per species
-- **Stress penalty**: Penalizes species conflicts (Martes + Oryctolagus)
+- **Preprocessing:**  
+  - Builds a georeferenced connectivity graph.  
+  - Computes shortest paths (Dijkstra) from existing populations using real friction costs.
 
-### Model Constraints
+- **Optimization:**  
+  - Uses **OR-Tools CP-SAT**.  
+  - Ensures budget feasibility, biological equity, and species conflict management.
 
-1. **Budget**: Total costs (adaptation + corridors) ≤ budget
-2. **Equity**: Each species must have between X% and Y% of total active area
-3. **Connectivity**: Active cells must be connected to existing populations
-4. **Conflicts**: Martes and Eliomys cannot coexist in the same cell
+### **3. Analysis (`3_notebooks/`)**
 
-## 📈 Results
+- Notebooks for detailed exploration of model performance and resulting habitat networks.
 
-Results include:
+---
 
-- **Optimal solution**: CSV with selected cells and active species
-- **Visualization maps**: Habitat expansion by species
-- **Cost audit**: Breakdown of expenses in adaptation and corridors
-- **Performance metrics**: Objective score, optimality gap, execution time
+## Model Configuration
 
-## 📚 Additional Documentation
+### **Main Parameters (in `optimization_model.py`)**
 
-For more technical details, see:
+- **Budget:** defined in `main.py` (default 1000 kEUR)  
+- **Biological equity:** min and max active area per species  
+- **Stress penalty:** penalizes species conflicts (Martes + Oryctolagus)
 
-- `DOCUMENTATION.md`: Complete technical documentation
-- `1_documentation/model-design/`: Model design and evolution
-- `3_notebooks/01_eda_analysis.ipynb`: Detailed exploratory analysis
+### **Model Constraints**
 
-## 👥 Author
+- **Budget:**  
+  Total costs (adaptation + corridors) ≤ budget
+
+- **Equity:**  
+  Each species must occupy between X% and Y% of the total active area
+
+- **Connectivity:**  
+  Active cells must be connected to existing populations through paid corridors
+
+- **Conflicts:**  
+  Martes and Eliomys cannot coexist in the same cell
+
+---
+
+## Results
+
+Outputs include:
+
+- **Optimal solution:** CSV with selected cells and active species  
+- **Cost audit:** expense breakdown (adaptation vs. corridors)  
+- **Performance metrics:** objective value, optimality gap, runtime
+
+## Optimal Solution Map
+
+![Optimal Solution Map: Active Habitats and Ecological Corridors](5_results/solutions/optimal_solution_map.png)
+
+---
+
+## Additional Documentation
+
+For more technical details:
+
+- `1_documentation/model-design/`: full PDF documentation of model evolution  
+- `3_notebooks/01_eda_analysis.ipynb`: exploratory analysis notebook
+
+---
+
+## Author
 
 Academic project on biodiversity conservation in Menorca.
+
