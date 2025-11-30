@@ -7,7 +7,7 @@ import time
 from ortools.linear_solver import pywraplp
 
 # ==========================================
-# 1. FUNCIONES AUXILIARES
+# 1. AUXILIARY FUNCTIONS
 # ==========================================
 def haversine_distance(lon1, lat1, lon2, lat2):
     R = 6371.0 
@@ -19,10 +19,10 @@ def haversine_distance(lon1, lat1, lon2, lat2):
 
 
 # ==========================================
-# 2. PRE-PROCESAMIENTO (idéntico al tuyo)
+# 2. PRE-PROCESSING (identical to yours)
 # ==========================================
 def preprocess_data(csv_path, geojson_path, pruning_budget_k=None):
-    print(f"⚙️ [1/2] Pre-procesando datos...")
+    print(f"⚙️ [1/2] Pre-processing data...")
     start_time = time.time()
     
     df = pd.read_csv(csv_path)
@@ -112,7 +112,7 @@ def preprocess_data(csv_path, geojson_path, pruning_budget_k=None):
                 edge_list.append((u,v))
             paths_requirements[tgt][s_idx] = edge_list
 
-    print(f"✅ Pre-procesamiento en {time.time()-start_time:.2f}s")
+    print(f"✅ Pre-processing completed in {time.time()-start_time:.2f}s")
     return {
         'ids': ids, 'n_nodes': n_nodes, 'S_LIST': S_LIST, 'W_vals': W_vals,
         'areas': areas, 'suitability': suitability, 'cost_adapt': cost_adapt,
@@ -123,12 +123,12 @@ def preprocess_data(csv_path, geojson_path, pruning_budget_k=None):
 
 
 # ==========================================
-# 3. SOLVER UNIFICADO (1 THREAD, 10min)
+# 3. UNIFIED SOLVER (1 THREAD, 10min)
 # ==========================================
 def solve_conservation_mip(data, budget=1000, time_limit_sec=600, seed=0, solver_name='CBC'):
-    print(f"\n⚡ Ejecutando {solver_name} (Seed={seed})")
+    print(f"\n⚡ Running {solver_name} (Seed={seed})")
 
-    # Crear solver con 1 thread y 10 min por ejecución
+    # Create solver with 1 thread and 10 min per execution
     if solver_name == "HIGHS":
         solver = pywraplp.Solver.CreateSolver("HIGHS")
     elif solver_name == "CBC":
@@ -142,7 +142,7 @@ def solve_conservation_mip(data, budget=1000, time_limit_sec=600, seed=0, solver
     solver.SetNumThreads(1)
     solver.SetTimeLimit(time_limit_sec * 1000)
 
-    # DESCOMPACTACIÓN
+    # UNPACKING
     n = data['n_nodes']
     S = data['S_LIST']
     ns = len(S)
@@ -178,7 +178,7 @@ def solve_conservation_mip(data, budget=1000, time_limit_sec=600, seed=0, solver
     for e in used_edges:
         z[e] = solver.IntVar(0,1,"z_%s_%s"%e)
 
-    # OBJETO Y RESTRICCIONES
+    # OBJECTIVE AND CONSTRAINTS
     obj = 0
     cost_expr = 0
     species_area = [0]*ns
@@ -243,20 +243,20 @@ def solve_conservation_mip(data, budget=1000, time_limit_sec=600, seed=0, solver
 
 
 # ==========================================
-# 4. EXPERIMENTO (MÁX 1h 15m por SOLVER)
+# 4. EXPERIMENT (MAX 1h 15m per SOLVER)
 # ==========================================
 if __name__ == "__main__":
     CSV_FILE = "final_dataset.csv"
     GEOJSON_FILE = "final_dataset.geojson"
-    PRESUPUESTO = 1000
+    BUDGET = 1000
     N_RUNS = 30
     MAX_SOLVER_TIME = 4500   # 1h 15m
 
-    data = preprocess_data(CSV_FILE, GEOJSON_FILE, pruning_budget_k=PRESUPUESTO)
-    # lista = ["CBC", "SCIP", "HIGHS"]
+    data = preprocess_data(CSV_FILE, GEOJSON_FILE, pruning_budget_k=BUDGET)
+    # list = ["CBC", "SCIP", "HIGHS"]
     for solver_name in ["HIGHS"]:
         print(f"\n==============================")
-        print(f"   🚀 EXPERIMENTO {solver_name}")
+        print(f"   🚀 EXPERIMENT {solver_name}")
         print("==============================\n")
 
         results = []
@@ -264,13 +264,13 @@ if __name__ == "__main__":
 
         for run in range(N_RUNS):
             if time.time() - start_solver_time > MAX_SOLVER_TIME:
-                print(f"⏳ Tiempo máximo alcanzado para {solver_name}. Se detiene.")
+                print(f"⏳ Maximum time reached for {solver_name}. Stopping.")
                 break
 
             print(f"🔄 Run {run+1}/{N_RUNS}")
             df_sol, metrics = solve_conservation_mip(
                 data,
-                budget=PRESUPUESTO,
+                budget=BUDGET,
                 time_limit_sec=600,
                 seed=run,
                 solver_name=solver_name
@@ -284,5 +284,5 @@ if __name__ == "__main__":
         df_res = pd.DataFrame(results)
         df_res.to_csv(f"metricas_{solver_name}_500_1_thread.csv", index=False)
 
-        print("\n📊 Resumen:")
+        print("\n📊 Summary:")
         print(df_res[["score","time"]].describe().round(2))

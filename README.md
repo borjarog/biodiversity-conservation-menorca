@@ -1,129 +1,129 @@
-# Proyecto de Conservación de Biodiversidad en Menorca
+# Biodiversity Conservation Project in Menorca
 
-## 📋 Descripción del Proyecto
+## 📋 Project Description
 
-Este proyecto implementa un modelo de optimización para la conservación de biodiversidad en la isla de Menorca. El objetivo es determinar la asignación óptima de recursos (presupuesto limitado) para expandir los hábitats de cuatro especies clave mediante:
+This project implements an optimization model for biodiversity conservation on the island of Menorca. The objective is to determine the optimal allocation of resources (limited budget) to expand habitats for four key species through:
 
-- **Adaptación de celdas**: Modificar el hábitat de celdas para hacerlas adecuadas para especies específicas
-- **Construcción de corredores**: Conectar poblaciones existentes con nuevas áreas mediante corredores ecológicos
+- **Cell adaptation**: Modifying cell habitats to make them suitable for specific species
+- **Corridor construction**: Connecting existing populations with new areas through ecological corridors
 
-### Especies Objetivo
+### Target Species
 
-1. **Atelerix algirus** (Erizo argelino) - Peso: 1.0
-2. **Martes martes** (Marta) - Peso: 1.0
-3. **Eliomys quercinus** (Lirón careto) - Peso: 2.0
-4. **Oryctolagus cuniculus** (Conejo europeo) - Peso: 1.5
+1. **Atelerix algirus** (Algerian hedgehog) - Weight: 1.0
+2. **Martes martes** (Pine marten) - Weight: 1.0
+3. **Eliomys quercinus** (Garden dormouse) - Weight: 2.0
+4. **Oryctolagus cuniculus** (European rabbit) - Weight: 1.5
 
-## 🏗️ Estructura del Proyecto
+## 🏗️ Project Structure
 
 ```text
 biodiversity-conservation-menorca/
-├── 1_documentation/          # Documentación del modelo y justificaciones
-│   ├── model-design/         # Versiones del diseño del modelo
-│   └── minimum-area-targets/ # Justificación de objetivos de área mínima
-├── 2_data/                   # Datos del proyecto
-│   ├── raw/                  # Datos originales (dataset.geojson)
-│   └── processed/            # Datos procesados (final_dataset.csv/geojson)
-├── 3_notebooks/              # Análisis exploratorio y visualizaciones
+├── 1_documentation/          # Model documentation and justifications
+│   ├── model-design/         # Model design versions
+│   └── minimum-area-targets/ # Minimum area target justifications
+├── 2_data/                   # Project data
+│   ├── raw/                  # Original data (dataset.geojson)
+│   └── processed/            # Processed data (final_dataset.csv/geojson)
+├── 3_notebooks/              # Exploratory analysis and visualizations
 │   ├── 00_project_statement.ipynb.ipynb
 │   ├── 01_eda_analysis.ipynb
 │   ├── 02_visualization_maps.ipynb
-│   └── iterations/           # Iteraciones del modelo (v1, v2)
-├── 4_source_code/            # Código fuente principal
-│   ├── data_preparation.py   # Preparación y procesamiento de datos
-│   ├── optimization_model.py # Modelo de optimización CP-SAT
-│   └── main.py               # Script principal de ejecución
-├── 5_results/                # Resultados generados
-│   ├── EDA/                  # Análisis exploratorio de datos
-│   ├── solutions/            # Soluciones óptimas y mapas
-│   ├── iterations/           # Resultados de iteraciones
-│   └── tables/               # Tablas de resultados
-└── 6_final_submission/       # Entrega final
+│   └── iterations/           # Model iterations (v1, v2)
+├── 4_source_code/            # Main source code
+│   ├── data_preparation.py   # Data preparation and processing
+│   ├── optimization_model.py # CP-SAT optimization model
+│   └── main.py               # Main execution script
+├── 5_results/                # Generated results
+│   ├── EDA/                  # Exploratory data analysis
+│   ├── solutions/            # Optimal solutions and maps
+│   ├── iterations/           # Iteration results
+│   └── tables/               # Result tables
+└── 6_final_submission/       # Final submission
 ```
 
-## 🚀 Inicio Rápido
+## 🚀 Quick Start
 
-### Requisitos Previos
+### Prerequisites
 
 ```bash
 pip install pandas geopandas numpy networkx ortools matplotlib seaborn
 ```
 
-O instala desde `requirements.txt` (si está disponible).
+Or install from `requirements.txt` (if available).
 
-### Ejecución del Modelo
+### Model Execution
 
-1. **Preparar los datos** (si aún no están procesados):
+1. **Prepare the data** (if not already processed):
 
 ```bash
 cd 4_source_code
 python data_preparation.py
 ```
 
-2. **Ejecutar el modelo de optimización**:
+2. **Run the optimization model**:
 
 ```bash
 python main.py
 ```
 
-   **Nota**: El script ejecutará el solver con presupuesto de 1000 kEUR y límite de tiempo de 600 segundos (10 minutos).
+   **Note**: The script will run the solver with a budget of 1000 kEUR and a time limit of 600 seconds (10 minutes).
 
-3. **Resultados**:
+3. **Results**:
 
-   La solución se guarda en `5_results/solutions/solution_optimal.csv` y se genera una auditoría de costos en la consola.
+   The solution is saved to `5_results/solutions/solution_optimal.csv` and a cost audit is generated in the console.
 
-## 📊 Flujo de Trabajo
+## 📊 Workflow
 
-1. **Preparación de Datos** (`data_preparation.py`):
-   - Carga datos geográficos desde `2_data/raw/dataset.geojson`
-   - Calcula puntuaciones de idoneidad para cada especie según tipo de cobertura del suelo
-   - Identifica vecinos de cada celda
-   - Exporta dataset final en CSV y GeoJSON
+1. **Data Preparation** (`data_preparation.py`):
+   - Loads geographic data from `2_data/raw/dataset.geojson`
+   - Calculates suitability scores for each species based on land cover type
+   - Identifies neighbors for each cell
+   - Exports final dataset in CSV and GeoJSON formats
 
-2. **Modelo de Optimización** (`optimization_model.py`):
-   - Construye grafo de conectividad entre celdas
-   - Calcula rutas mínimas (Dijkstra) desde poblaciones existentes
-   - Resuelve problema de optimización con CP-SAT (Google OR-Tools)
-   - Considera restricciones de presupuesto, equidad biológica y conflictos entre especies
+2. **Optimization Model** (`optimization_model.py`):
+   - Builds connectivity graph between cells
+   - Calculates shortest paths (Dijkstra) from existing populations
+   - Solves optimization problem with CP-SAT (Google OR-Tools)
+   - Considers budget constraints, biological equity, and species conflicts
 
-3. **Análisis y Visualización** (`3_notebooks/`):
-   - Análisis exploratorio de datos (EDA)
-   - Visualización de mapas y resultados
-   - Comparación de iteraciones del modelo
+3. **Analysis and Visualization** (`3_notebooks/`):
+   - Exploratory data analysis (EDA)
+   - Map and result visualizations
+   - Model iteration comparisons
 
-## 🔧 Configuración del Modelo
+## 🔧 Model Configuration
 
-### Parámetros Principales (en `optimization_model.py`)
+### Main Parameters (in `optimization_model.py`)
 
-- **Presupuesto**: Definido en `main.py` (por defecto: 1000 kEUR)
-- **Pesos de especies**: `W_VALS = [1.0, 1.0, 2.0, 1.5]`
-- **Equidad biológica**: Rangos mínimos y máximos de área activa por especie
-- **Penalización por estrés**: Penaliza conflictos entre especies (Martes + Oryctolagus)
+- **Budget**: Defined in `main.py` (default: 1000 kEUR)
+- **Species weights**: `W_VALS = [1.0, 1.0, 2.0, 1.5]`
+- **Biological equity**: Minimum and maximum ranges of active area per species
+- **Stress penalty**: Penalizes species conflicts (Martes + Oryctolagus)
 
-### Restricciones del Modelo
+### Model Constraints
 
-1. **Presupuesto**: Costos totales (adaptación + corredores) ≤ presupuesto
-2. **Equidad**: Cada especie debe tener entre X% y Y% del área total activa
-3. **Conectividad**: Las celdas activas deben estar conectadas a poblaciones existentes
-4. **Conflictos**: Martes y Eliomys no pueden coexistir en la misma celda
+1. **Budget**: Total costs (adaptation + corridors) ≤ budget
+2. **Equity**: Each species must have between X% and Y% of total active area
+3. **Connectivity**: Active cells must be connected to existing populations
+4. **Conflicts**: Martes and Eliomys cannot coexist in the same cell
 
-## 📈 Resultados
+## 📈 Results
 
-Los resultados incluyen:
+Results include:
 
-- **Solución óptima**: CSV con celdas seleccionadas y especies activas
-- **Mapas de visualización**: Expansión de hábitat por especie
-- **Auditoría de costos**: Desglose de gastos en adaptación y corredores
-- **Métricas de rendimiento**: Score objetivo, gap de optimalidad, tiempo de ejecución
+- **Optimal solution**: CSV with selected cells and active species
+- **Visualization maps**: Habitat expansion by species
+- **Cost audit**: Breakdown of expenses in adaptation and corridors
+- **Performance metrics**: Objective score, optimality gap, execution time
 
-## 📚 Documentación Adicional
+## 📚 Additional Documentation
 
-Para más detalles técnicos, consulta:
+For more technical details, see:
 
-- `DOCUMENTATION.md`: Documentación técnica completa
-- `1_documentation/model-design/`: Diseño y evolución del modelo
-- `3_notebooks/01_eda_analysis.ipynb`: Análisis exploratorio detallado
+- `DOCUMENTATION.md`: Complete technical documentation
+- `1_documentation/model-design/`: Model design and evolution
+- `3_notebooks/01_eda_analysis.ipynb`: Detailed exploratory analysis
 
-## 👥 Autor
+## 👥 Author
 
-Proyecto académico de conservación de biodiversidad en Menorca.
+Academic project on biodiversity conservation in Menorca.
