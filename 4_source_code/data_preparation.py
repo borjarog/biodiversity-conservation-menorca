@@ -131,16 +131,28 @@ from_rules = {
 }
 
 # ----------------------------------------------------
-# GET SCORE FUNCTION AND XY EXTRACTION
+# HELPER FUNCTIONS
 # ----------------------------------------------------
 
 
 def get_score(land, species):
+    """
+    Retrieves the suitability score for a given land cover and species.
+    Args:
+        land (str): The dominant land cover name.
+        species (str): The species name ('atelerix', 'martes', etc.).
+    Returns: float: The numerical suitability score (0.0 to 3.0).
+    """
     label = from_rules[species].get(land, "Very Low")
     return score_map.get(label, 0.0)
 
 
 def extract_xy(grid_id):
+    """
+    Extracts X and Y coordinates from a grid ID string.
+    Args: grid_id (str): The grid ID in the format 'cell_X_Y'.
+    Returns: tuple: A tuple (x, y) as integers, or (None, None) if parsing fails.
+    """
     try:
         _, x, y = grid_id.split("_")
         return int(x), int(y)
@@ -148,12 +160,13 @@ def extract_xy(grid_id):
         return None, None
 
 
-# ----------------------------------------------------
-# GET NEIGHBORS FUNCTION
-# ----------------------------------------------------
-
-
 def compute_neighbors(df):
+    """
+    Computes the neighbors for each grid cell based on coordinate adjacency.
+    It considers the 8 neighbors (horizontal, vertical, and diagonal).
+    Args: df (GeoDataFrame): The dataframe containing 'grid_x' and 'grid_y' columns.
+    Returns: GeoDataFrame: The dataframe with a new 'neighbors' column containing semicolon-separated IDs.
+    """
     coord_to_id = {(row.grid_x, row.grid_y): row.grid_id for _, row in df.iterrows()}
 
     neighbor_list = []
@@ -161,6 +174,7 @@ def compute_neighbors(df):
     for _, row in df.iterrows():
         x, y = row.grid_x, row.grid_y
 
+        # Moore neighborhood (8 neighbors)
         candidates = [
             (x - 1, y),
             (x + 1, y),
@@ -195,30 +209,28 @@ if __name__ == "__main__":
     gdf = gpd.read_file(input_data_path)
     print(f"[INFO] Loaded dataset: {len(gdf)} cells.")
 
-    # Extract grid_x and grid_y
+    # Extract grid coordinates
     gdf["grid_x"], gdf["grid_y"] = zip(*gdf["grid_id"].apply(extract_xy))
-    gdf["grid_x"], gdf["grid_y"] = zip(*gdf["grid_id"].apply(extract_xy))
-
-    gdf = compute_neighbors(gdf)
-
     print("[INFO] Extracted grid_x and grid_y from grid_id.")
+
+    # Compute neighbors
+    gdf = compute_neighbors(gdf)
     print("[INFO] Computed neighbors for each cell.")
 
-    # Compute suitability columns
+    # Compute suitability columns for each species
     for sp in ["atelerix", "martes", "eliomys", "oryctolagus"]:
         gdf[f"suitability_{sp}"] = gdf["dominant_land_cover_name"].apply(
             lambda x: get_score(x, sp)
         )
+    print("[INFO] Calculated suitability scores.")
 
-    # Save final dataset
+    # Save final datasets
     print(f"[INFO] Saving final GeoJSON: {output_data_path}")
     gdf.to_file(output_data_path, driver="GeoJSON")
 
-    # Export also to CSV (geometry becomes WKT by default unless you drop it)
     csv_output_path = os.path.join(
         os.path.dirname(__file__), "../2_data/processed/final_dataset.csv"
     )
-
     print(f"[INFO] Saving CSV: {csv_output_path}")
     gdf.to_csv(csv_output_path, index=False)
 
