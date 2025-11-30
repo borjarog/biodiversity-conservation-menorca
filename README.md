@@ -70,7 +70,7 @@ The solution was developed through three distinct modeling phases to overcome sc
 - **Outcome:** Computationally intractable on the full island grid due to the explosion of integer variables.
 
 ### Phase 2: Path Selection Strategy (V.2)
-- **Concept:** Replaced flow variables with a pre-calculated path strategy. Connectivity was enforced via logical implications ($x \implies z$).
+- **Concept:** Replaced flow variables with a pre-calculated path strategy. Connectivity was enforced via logical implications.
 - **Outcome:** Solvable, but lacked geographical realism (corridors followed abstract grid adjacency rather than real terrain).
 
 ### Phase 3: Hybrid Geodetic Model (Final V.3)
