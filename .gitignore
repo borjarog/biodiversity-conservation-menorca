@@ -1,0 +1,19 @@
+# --- Python ---
+__pycache__/
+*.py[cod]
+*$py.class
+.env
+venv/
+.venv/
+
+# --- Jupyter Notebooks ---
+.ipynb_checkpoints/
+*/.ipynb_checkpoints/
+
+# --- VS Code ---
+.vscode/
+*.code-workspace
+.DS_Store
+
+# --- Archivos Temporales o Basura ---
+temp/
