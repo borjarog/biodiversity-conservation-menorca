@@ -43,7 +43,7 @@ def main():
             print(f"\nSolution saved successfully: {out_file}")
 
     except Exception as e:
-        print(f"\nERROR DURING EXECUTION:")
+        print("\nERROR DURING EXECUTION:")
         print(e)
         import traceback
 

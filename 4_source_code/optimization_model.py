@@ -375,7 +375,7 @@ class MenorcaSolver:
         print("\n" + "=" * 40)
         print(f" TOTAL TIME: {t_total_solve:.2f} seconds")
         if status == cp_model.OPTIMAL:
-            print(f" OPTIMAL SOLUTION PROVEN")
+            print("OPTIMAL SOLUTION PROVEN")
         elif status == cp_model.FEASIBLE:
             print(f" FEASIBLE SOLUTION (Gap: {gap:.2f}%)")
         else:
@@ -417,7 +417,7 @@ class MenorcaSolver:
             print(" Warning: No solution loaded.")
             return
 
-        print(f" COST AUDIT")
+        print("COST AUDIT")
         print("-" * 50)
 
         df_sol = self.solution
