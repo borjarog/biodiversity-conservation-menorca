@@ -38,6 +38,7 @@ biodiversity-conservation-menorca/
 │       └── experiment visualizations    # PNG plots (comparisons, boxplots, etc.)
 │
 ├── 4_source_code/                       # Core Python source code
+│   ├── future_work/                     # Project possible improvements
 │   ├── data_preparation.py              # Builds final dataset
 │   ├── optimization_model.py            # CP-SAT optimization model
 │   └── main.py                          # Model execution entry point
