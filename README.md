@@ -15,32 +15,52 @@ This project implements an optimization model for biodiversity conservation on t
 4. *Oryctolagus cuniculus*
 
 ## Project Structure
+## Project Structure
 ```
 biodiversity-conservation-menorca/
-├── 1_documentation/               # Model documentation and justifications
-│   ├── model-design/              # Model design versions (V1, V2, V3)
-│   └── minimum-area-targets/      # Minimum area target justifications
-├── 2_data/                        # Project data
-│   ├── raw/                       # Original data (dataset.geojson)
-│   └── processed/                 # Processed data (final_dataset.csv/geojson)
-├── 3_notebooks/                   # Exploratory analysis and visualizations
+├── 1_documentation/                     # Model documentation and academic references
+│   ├── model-design/                    # Model design versions (V1, V2, V3)
+│   └── minimum-area-targets/            # Species-specific minimum area justifications
+│       └── papers/                      # Scientific sources for area targets
+│ 
+├── 2_data/                              # Project datasets
+│   ├── raw/                             # Original geographic data (dataset.geojson)
+│   └── processed/                       # Processed datasets (CSV + GeoJSON)
+│
+├── 3_notebooks/                         # Jupyter notebooks (analysis & visualization)
 │   ├── 00_project_statement.ipynb
 │   ├── 01_eda_analysis.ipynb
 │   ├── 02_visualization_maps.ipynb
-│   └── iterations/                # Model iterations (V1, V2)
-├── 4_source_code/                 # Main source code
-│   ├── data_preparation.py        # Data preparation and processing
-│   ├── optimization_model.py      # CP-SAT optimization model (V3)
-│   └── main.py                    # Main execution script
-├── 5_results/                     # Generated results
-│   ├── EDA/                       # Exploratory data analysis outputs
-│   ├── solutions/                 # Final solutions and maps
-│   ├── iterations/                # Intermediate results for V1/V2/V3
-│   └── tables/                    # Summary tables
-└── 6_final_submission/            # Final submission package
-    ├── report.pdf                 # Final project report PDF
-    └── experiments/               # All experiment runs used in the report
+│   ├── iterations/                      # Model iteration notebooks (V1/V2)
+│   └── experiments/                     # Solver performance experiments
+│       ├── datasets/                    # Benchmark results (multiple solvers)
+│       ├── scripts/                     # Scripts used to run experiments
+│       ├── analysis.ipynb               # Experiment analysis notebook
+│       └── experiment visualizations    # PNG plots (comparisons, boxplots, etc.)
+│
+├── 4_source_code/                       # Core Python source code
+│   ├── data_preparation.py              # Builds final dataset
+│   ├── optimization_model.py            # CP-SAT optimization model
+│   └── main.py                          # Model execution entry point
+│
+├── 5_results/                           # All generated outputs
+│   ├── EDA/                             # Exploratory data analysis figures
+│   ├── iterations/                      # Maps for V1 and V2 model runs
+│   └── solutions/                       # Final optimal solution + species expansion maps
+│       ├── species_expansion/
+│       ├── optimal_solution_map.png
+│       ├── solution_optimal.csv
+│       ├── solution_v1.csv
+│       └── solution_v2.csv
+│
+├── 6_final_submission/                  # Final formal delivery package
+│
+├── README.md
+├── requirements.txt
+├── pyproject.toml
+└── uv.lock
 ```
+
 ## Model Evolution (Iterative Process)
 
 The solution was developed through three distinct modeling phases to overcome scalability challenges:
