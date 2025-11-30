@@ -20,8 +20,7 @@ This project implements an optimization model for biodiversity conservation on t
 biodiversity-conservation-menorca/
 ├── 1_documentation/                     # Model documentation and academic references
 │   ├── model-design/                    # Model design versions (V1, V2, V3)
-│   └── minimum-area-targets/            # Species-specific minimum area justifications
-│       └── papers/                      # Scientific sources for area targets
+│   └── minimum-area-targets/            # Scientific sources for area targets
 │ 
 ├── 2_data/                              # Project datasets
 │   ├── raw/                             # Original geographic data (dataset.geojson)
